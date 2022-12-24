@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Bars } from 'react-loader-spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CardGroup from 'react-bootstrap/CardGroup'
 import Container from "react-bootstrap/Container";
@@ -9,6 +10,7 @@ import PersonDetailCard from './PersonDetailCard';
 
 export default function PersonList() {
     const [persons, setPersons] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         axios.get("https://jsonplaceholder.typicode.com/users")
@@ -35,6 +37,7 @@ export default function PersonList() {
                 }
 
                 setPersons(users);
+                setLoading(false);
             })
             .catch((error) => {
                 console.log(error);
@@ -44,21 +47,31 @@ export default function PersonList() {
 
     return (
         <div>
-            <Container>
-                <CardGroup>
-                    {persons.map((person) => {
-                        return (
+            {loading ? <div style={{display:"flex", justifyContent:"center"}}>
+                <Bars
+                    height="80"
+                    width="80"
+                    color="#4fa94d"
+                    ariaLabel="bars-loading"
+                    
+                />
+            </div> :
+                <Container>
+                    <CardGroup>
+                        {persons.map((person) => {
+                            return (
 
-                            <PersonDetailCard
-                                person={person}
-                                key={person.id}
-                                persons={persons}
-                                setPersons={setPersons}
-                            />
-                        )
-                    })}
-                </CardGroup>
-            </Container>
+                                <PersonDetailCard
+                                    person={person}
+                                    key={person.id}
+                                    persons={persons}
+                                    setPersons={setPersons}
+                                />
+                            )
+                        })}
+                    </CardGroup>
+                </Container>
+            }
         </div>
     )
 }
